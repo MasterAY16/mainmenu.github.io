@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Don't Click the Wrong One</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: repeating-linear-gradient(45deg, #111 0px, #111 10px, #eee 10px, #eee 20px);
+      font-family: Comic Sans MS, cursive, sans-serif;
+    }
+
+    .button {
+      position: absolute;
+      width: 100px;
+      height: 50px;
+      background-color: #ff00ff;
+      color: lime;
+      border: 3px solid yellow;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 2px 2px 5px #000;
+    }
+
+    #message {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: cyan;
+      color: black;
+      padding: 10px;
+      border: 3px dashed red;
+      font-size: 18px;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+
+<div id="message">Click the right button. There's a clue... sort of.</div>
+
+<script>
+  const totalButtons = 20;
+  const correctIndex = Math.floor(Math.random() * totalButtons);
+
+  function shuffleButtons() {
+    const buttons = document.querySelectorAll('.button');
+    buttons.forEach(btn => {
+      const x = Math.random() * (window.innerWidth - 100);
+      const y = Math.random() * (window.innerHeight - 50);
+      btn.style.left = x + "px";
+      btn.style.top = y + "px";
+    });
+  }
+
+  for (let i = 0; i < totalButtons; i++) {
+    const btn = document.createElement('button');
+    btn.classList.add('button');
+
+    if (i === correctIndex) {
+      btn.textContent = "Click me!";
+      btn.onclick = () => {
+        btn.style.backgroundColor = "lime";
+        btn.textContent = "Congrats.";
+        document.getElementById("message").innerText = "Ugh. You noticed.";
+        document.body.style.background = "#0f0";
+      };
+    } else {
+      btn.textContent = "Click me";
+      btn.onclick = () => {
+        alert("Nope. Try again.");
+        shuffleButtons();
+      };
+    }
+
+    document.body.appendChild(btn);
+  }
+
+  shuffleButtons();
+</script>
+
+</body>
+</html>
