@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Catch the Dot (One Shot)</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: repeating-linear-gradient(
+        45deg,
+        #000,
+        #000 10px,
+        #fff 10px,
+        #fff 20px
+      );
+      font-family: Comic Sans MS, cursive, sans-serif;
+    }
+
+    #dot {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background-color: red;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 10px yellow;
+    }
+
+    #status {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background-color: lime;
+      padding: 10px;
+      border: 5px dotted magenta;
+      font-size: 20px;
+    }
+
+    #taunt {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      color: cyan;
+      background-color: black;
+      padding: 8px;
+      border: 2px solid red;
+      font-size: 16px;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+<div id="status">Chase the dot!</div>
+<div id="taunt">Getting faster...</div>
+<div id="dot"></div>
+
+<script>
+  const dot = document.getElementById("dot");
+  const status = document.getElementById("status");
+  const taunt = document.getElementById("taunt");
+
+  let speed = 1000; // Initial speed
+  let gameOver = false;
+  let interval;
+
+  function moveDot() {
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    dot.style.left = x + "px";
+    dot.style.top = y + "px";
+  }
+
+  function speedUp() {
+    if (gameOver) return;
+    clearInterval(interval);
+    speed = Math.max(100, speed - 100); // Minimum speed
+    interval = setInterval(moveDot, speed);
+    taunt.innerText = `Speed: ${speed}ms`;
+  }
+
+  dot.addEventListener("click", () => {
+    if (gameOver) return;
+    gameOver = true;
+    clearInterval(interval);
+    dot.style.display = "none";
+    status.innerText = "You got me!";
+    taunt.innerText = "You're lucky. Next time, I won't be so easy.";
+  });
+
+  // Start moving the dot
+  interval = setInterval(moveDot, speed);
+  setInterval(speedUp, 1500); // Speed up every 1.5 seconds
+</script>
+
+</body>
+</html>

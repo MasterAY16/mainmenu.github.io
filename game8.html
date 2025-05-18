@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Click Craze</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #e0f7fa, #e1bee7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    #score, #timer, #message {
+      font-size: 28px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    #clickButton {
+      padding: 30px 60px;
+      font-size: 24px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(to top right, #00c853, #b2ff59);
+      color: white;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      transition: transform 0.1s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    #clickButton:hover {
+      transform: scale(1.05);
+    }
+
+    #clickButton:active {
+      transform: scale(0.95);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .upgrade-container {
+      margin-top: 20px;
+      background: #fff3e0;
+      padding: 15px 25px;
+      border-radius: 12px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+      font-size: 16px;
+      color: #444;
+    }
+
+    .upgrade-container button {
+      margin: 5px 0;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #ff9800;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .upgrade-container button:hover {
+      background-color: #fb8c00;
+    }
+  </style>
+</head>
+<body>
+
+<div id="score">Score: 0</div>
+<div id="timer">Time: 0s</div>
+<div id="message"></div>
+<button id="clickButton">Click Me!</button>
+
+<div class="upgrade-container">
+  <div>Points per click: <span id="ppc">1</span></div>
+  <button id="upgradeClick">Upgrade Click (Cost: <span id="clickCost">10</span>)</button>
+</div>
+
+<div class="upgrade-container">
+  <div>Passive income per second: <span id="passive">0</span></div>
+  <button id="buyPassive">Buy Passive Generator (Cost: <span id="passiveCost">50</span>)</button>
+</div>
+
+<script>
+  let score = 0;
+  let pointsPerClick = 1;
+  let clickUpgradeCost = 10;
+  let passiveIncome = 0;
+  let passiveUpgradeCost = 50;
+  const winScore = 500;
+  let startTime = Date.now();
+  let intervalId;
+
+  const scoreDisplay = document.getElementById("score");
+  const ppcDisplay = document.getElementById("ppc");
+  const clickCostDisplay = document.getElementById("clickCost");
+  const passiveDisplay = document.getElementById("passive");
+  const passiveCostDisplay = document.getElementById("passiveCost");
+  const timerDisplay = document.getElementById("timer");
+  const messageDisplay = document.getElementById("message");
+  const clickButton = document.getElementById("clickButton");
+
+  function updateScore() {
+    scoreDisplay.innerText = "Score: " + score;
+  }
+
+  function updateTimer() {
+    let elapsed = Math.floor((Date.now() - startTime) / 1000);
+    timerDisplay.innerText = `Time: ${elapsed}s`;
+  }
+
+  function checkWinCondition() {
+    if (score >= winScore) {
+      clearInterval(intervalId);
+      clickButton.disabled = true;
+      document.getElementById("upgradeClick").disabled = true;
+      document.getElementById("buyPassive").disabled = true;
+      let elapsed = Math.floor((Date.now() - startTime) / 1000);
+      messageDisplay.innerText = `🎉 You win! Final Score: ${score} in ${elapsed} seconds.`;
+    }
+  }
+
+  document.getElementById("clickButton").addEventListener("click", () => {
+    score += pointsPerClick;
+    updateScore();
+    checkWinCondition();
+  });
+
+  document.getElementById("upgradeClick").addEventListener("click", () => {
+    if (score >= clickUpgradeCost) {
+      score -= clickUpgradeCost;
+      pointsPerClick++;
+      clickUpgradeCost = Math.floor(clickUpgradeCost * 1.7);
+      ppcDisplay.innerText = pointsPerClick;
+      clickCostDisplay.innerText = clickUpgradeCost;
+      updateScore();
+    } else {
+      alert("Not enough points!");
+    }
+  });
+
+  document.getElementById("buyPassive").addEventListener("click", () => {
+    if (score >= passiveUpgradeCost) {
+      score -= passiveUpgradeCost;
+      passiveIncome++;
+      passiveUpgradeCost = Math.floor(passiveUpgradeCost * 2);
+      passiveDisplay.innerText = passiveIncome;
+      passiveCostDisplay.innerText = passiveUpgradeCost;
+      updateScore();
+    } else {
+      alert("Not enough points!");
+    }
+  });
+
+  // Passive income interval
+  setInterval(() => {
+    if (passiveIncome > 0) {
+      score += passiveIncome;
+      updateScore();
+      checkWinCondition();
+    }
+  }, 1000);
+
+  // Timer update
+  intervalId = setInterval(updateTimer, 1000);
+</script>
+
+</body>
+</html>

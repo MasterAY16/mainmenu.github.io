@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head><title>Worst UI Dialer</title></head>
+  <link rel="stylesheet" href="style.css">
+</html>
+
+<body>
+  <div id="dialedDisplay">Dialed num: </div>
+  <div id="callBtn">
+    <button id="callBtn" onclick="callNumber">Call</button>
+  </div>
+  <div>
+    <button class="num" id="zero" onclick="function_Num(0)">
+      <img src="number0.png">
+    </button>
+    <button class="num" id="one" onclick="function_Num(1)">
+      <img src="number1.png">
+    </button>
+    <button class="num" id="two" onclick="function_Num(2)">
+      <img src="number2.png">
+    </button>
+    <button class="num" id="three" onclick="function_Num(3)">
+      <img src="number3.png">
+    </button>
+    <button class="num" id="four" onclick="function_Num(4)">
+      <img src="number4.png">
+    </button>
+    <button class="num" id="five" onclick="function_Num(5)">
+      <img src="number5.png">
+    </button>
+    <button class="num" id="six" onclick="function_Num(6)">
+      <img src="number6.png">
+    </button>
+    <button class="num" id="seven" onclick="function_Num(7)">
+      <img src="number7.png">
+    </button>
+    <button class="num" id="eight" onclick="function_Num(8)">
+      <img src="number8.png">
+    </button>
+    <button class="num" id="nine" onclick="function_Num(9)">
+      <img src="number9.png">
+    </button>
+  </div>
+
+  <script>
+    window.addEventListener("message", function(event) {
+      if (event.data && typeof event.data.dialed === "number") {
+        const display = document.getElementById("dialedDisplay");
+        display.innerText += event.data.dialed.toString();
+      }
+    });
+
+    function callNumber() {
+      window.close();
+    }
+    function function_Num(num) {
+      alert("This may or may not work.");
+
+      const display = document.getElementById("dialedDisplay");
+      const prefix = "Dialed num: ";
+      let digits = display.innerText.slice(prefix.length); // just the number part
+
+      if (num === 4) {
+        // Remove last 2 digits safely
+        digits = digits.slice(0, Math.max(0, digits.length - 2));
+        display.innerText = prefix + digits;
+        return;
+      }
+
+      // Game launchers
+      if (num === 0) {
+        window.open("game0.html", "_blank");
+      }
+      if (num === 1) {
+        window.open("game1.html", "_blank");
+      }
+      if (num === 2) {
+        window.open("game2.html", "_blank");
+      }
+      if (num === 3) {
+        window.open("game3.html", "_blank");
+      }
+      if (num == 6) {
+        window.open("game6.html", "_blank");
+      }
+      if (num === 7) {
+        window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ", "_blank");
+      }
+      if (num == 8) {
+        window.open("game8.html", "_blank");
+      }
+      if (num ==9){
+        window.open("game9.html", "_blank");
+      }
+
+      // Append number
+      display.innerText = prefix + digits + num.toString();
+    }
+
+
+    window.onload = function () {
+      const buttons = document.querySelectorAll(".num");
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+
+      const placed = []; // store placed button bounds
+
+      const btnWidth = 60; // adjust if your images are different
+      const btnHeight = 60;
+      const padding = 10; // optional spacing between buttons
+
+      function isOverlapping(x, y) {
+        for (let box of placed) {
+          const xOverlap = x < box.x + btnWidth + padding && x + btnWidth + padding > box.x;
+          const yOverlap = y < box.y + btnHeight + padding && y + btnHeight + padding > box.y;
+          if (xOverlap && yOverlap) return true;
+        }
+        return false;
+      }
+
+      buttons.forEach(button => {
+        let x, y;
+        let attempts = 0;
+
+        do {
+          x = Math.floor(Math.random() * (screenWidth - btnWidth - padding));
+          y = Math.floor(Math.random() * (screenHeight - btnHeight - padding));
+          attempts++;
+          if (attempts > 1000) break; // avoid infinite loop
+        } while (isOverlapping(x, y));
+
+        placed.push({ x, y });
+        button.style.left = x + "px";
+        button.style.top = y + "px";
+      });
+    };
+  </script>
+
+</body>
